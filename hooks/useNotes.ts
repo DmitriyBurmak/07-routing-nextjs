@@ -10,9 +10,16 @@ interface UseNotesParams {
   page: number;
   search: string;
   perPage?: number;
+  tag?: string;
 }
 
-type NotesQueryKey = ['notes', number, string, number | undefined];
+type NotesQueryKey = [
+  'notes',
+  number,
+  string,
+  number | undefined,
+  string | undefined,
+];
 
 type UseNotesOptionsWithInitialData = Omit<
   UseQueryOptions<NotesResponse, Error, NotesResponse, NotesQueryKey>,
@@ -32,11 +39,13 @@ export const useNotes = (
     params.page,
     params.search,
     params.perPage,
+    params.tag,
   ];
 
   return useQuery<NotesResponse, Error, NotesResponse, NotesQueryKey>({
     queryKey: queryKey,
-    queryFn: () => fetchNotes(params.page, params.search, params.perPage),
+    queryFn: () =>
+      fetchNotes(params.page, params.search, params.perPage, params.tag),
     staleTime: 0,
     retry: 1,
     placeholderData: previousData => {
@@ -55,6 +64,7 @@ export const useNotes = (
           params.page - 1,
           params.search,
           params.perPage,
+          params.tag,
         ];
         const cachedDataForPreviousPage =
           queryClient.getQueryData(previousPageKey);

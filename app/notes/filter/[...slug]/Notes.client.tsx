@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDebounce } from 'use-debounce';
 import { useNotes } from '@/hooks/useNotes';
 import NoteList from '@/components/NoteList/NoteList';
@@ -10,17 +10,18 @@ import NoteModal from '@/components/NoteModal/NoteModal';
 import css from './NotesPage.module.css';
 import Loader from '@/app/loading';
 import ErrorMessage from '@/components/ErrorMessage/ErrorMessage';
-import type { Note } from '@/types/note';
-import type { NotesResponse } from '@/types/note';
+import type { Note, NotesResponse } from '@/types/note';
 
 interface NotesClientProps {
   initialNotes: Note[];
   initialTotalPages: number;
+  currentTag: string;
 }
 
 const NotesClient: React.FC<NotesClientProps> = ({
   initialNotes,
   initialTotalPages,
+  currentTag,
 }) => {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
@@ -28,13 +29,20 @@ const NotesClient: React.FC<NotesClientProps> = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const notesPerPage = 12;
 
+  useEffect(() => {
+    setPage(1);
+    setSearch('');
+  }, [currentTag]);
+
+  const apiTag = currentTag.toLowerCase() === 'all' ? undefined : currentTag;
+
   const {
     data: notesData,
     isLoading,
     isError,
     error,
   } = useNotes(
-    { page, search: debouncedSearch, perPage: notesPerPage },
+    { page, search: debouncedSearch, perPage: notesPerPage, tag: apiTag },
     {
       initialData: {
         notes: initialNotes,
@@ -44,6 +52,7 @@ const NotesClient: React.FC<NotesClientProps> = ({
       } as NotesResponse,
     }
   );
+  // ---
 
   const totalPages = notesData?.totalPages || 1;
   const currentNotes = notesData?.notes || [];

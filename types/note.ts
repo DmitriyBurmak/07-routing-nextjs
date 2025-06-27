@@ -1,4 +1,5 @@
 export type NoteTag = 'Todo' | 'Work' | 'Personal' | 'Meeting' | 'Shopping';
+export type UITag = NoteTag | 'All';
 
 export interface Note {
   id: number;

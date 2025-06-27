@@ -19,7 +19,8 @@ const getAuthHeaders = () => {
 export const fetchNotes = async (
   page: number,
   search: string,
-  perPage: number = 12
+  perPage: number = 12,
+  tag?: string
 ): Promise<NotesResponse> => {
   if (page < 1) {
     throw new Error('Page must be 1 or greater');
@@ -28,6 +29,10 @@ export const fetchNotes = async (
   const params: Record<string, string | number> = { page, perPage };
   if (search.trim() !== '') {
     params.search = search.trim();
+  }
+
+  if (tag && tag.toLowerCase() !== 'all') {
+    params.tag = tag;
   }
 
   const { data } = await axios.get<NotesResponse>('/notes', {
