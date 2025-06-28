@@ -6,13 +6,13 @@ import Modal from '@/components/Modal/Modal';
 import NotePreview from '@/components/NotePreview/NotePreview';
 
 interface InterceptedNotePageProps {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
 export default function InterceptedNotePage({
   params,
 }: InterceptedNotePageProps) {
-  const { id } = params;
+  const { id } = React.use(params);
   const router = useRouter();
   const noteId = Number(id);
   const handleClose = () => {
