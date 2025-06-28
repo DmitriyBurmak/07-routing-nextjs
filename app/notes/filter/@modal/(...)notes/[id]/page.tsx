@@ -2,8 +2,8 @@
 
 import React from 'react';
 import { useRouter } from 'next/navigation';
-import Modal from '../../../../../../components/Modal/Modal';
-import NotePreview from '../../../../../../components/NotePreview/NotePreview';
+import Modal from '@/components/Modal/Modal';
+import NotePreview from '@/components/NotePreview/NotePreview';
 
 interface InterceptedNotePageProps {
   params: { id: string };
@@ -12,9 +12,9 @@ interface InterceptedNotePageProps {
 export default function InterceptedNotePage({
   params,
 }: InterceptedNotePageProps) {
+  const { id } = params;
   const router = useRouter();
-  const noteId = Number(params.id);
-
+  const noteId = Number(id);
   const handleClose = () => {
     router.back();
   };
