@@ -4,7 +4,8 @@ import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchNoteById } from '@/lib/api';
 import type { Note } from '@/types/note';
-import css from './NotePreview.module.css';
+import css from '@/components/NotePreview/NotePreview.module.css';
+
 interface NotePreviewProps {
   id: number;
 }

@@ -3,7 +3,7 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import Modal from '@/components/Modal/Modal';
-import NotePreview from '@/components/NotePreview/NotePreview';
+import NotePreview from './NotePreview.client';
 
 interface InterceptedNotePageProps {
   params: Promise<{ id: string }>;
