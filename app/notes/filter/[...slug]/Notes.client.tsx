@@ -6,11 +6,12 @@ import { useNotes } from '@/hooks/useNotes';
 import NoteList from '@/components/NoteList/NoteList';
 import Pagination from '@/components/Pagination/Pagination';
 import SearchBox from '@/components/SearchBox/SearchBox';
-import NoteModal from '@/components/NoteModal/NoteModal';
+import Modal from '@/components/Modal/Modal'; // <--- Оновлено імпорт на універсальний Modal
+import NoteForm from '@/components/NoteForm/NoteForm'; // <--- Імпортуємо NoteForm, якщо використовується для створення
 import css from './NotesPage.module.css';
 import Loader from '@/app/loading';
 import ErrorMessage from '@/components/ErrorMessage/ErrorMessage';
-import type { Note, NotesResponse } from '@/types/note';
+import type { Note, NotesResponse, NoteTag } from '@/types/note'; // <--- Додано NoteTag, якщо використовується
 
 interface NotesClientProps {
   initialNotes: Note[];
@@ -52,7 +53,6 @@ const NotesClient: React.FC<NotesClientProps> = ({
       } as NotesResponse,
     }
   );
-  // ---
 
   const totalPages = notesData?.totalPages || 1;
   const currentNotes = notesData?.notes || [];
@@ -64,6 +64,13 @@ const NotesClient: React.FC<NotesClientProps> = ({
   const handleOpenCreateModal = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setIsModalOpen(true);
+  };
+
+  // Початкові значення для NoteForm
+  const initialFormValues = {
+    title: '',
+    content: '',
+    tag: 'Todo' as NoteTag, // Замініть на дефолтний тег, якщо потрібно
   };
 
   return (
@@ -100,7 +107,18 @@ const NotesClient: React.FC<NotesClientProps> = ({
         !isError &&
         currentNotes.length > 0 && <NoteList notes={currentNotes} />
       )}
-      {isModalOpen && <NoteModal onClose={handleModalClose} />}
+      {/* <--- Оновлено використання Modal з children для NoteForm --- */}
+      {isModalOpen && (
+        <Modal onClose={handleModalClose}>
+          <h2 className={css.modalTitle}>Create note</h2>{' '}
+          {/* Додайте modalTitle в NotesPage.module.css якщо він не визначений */}
+          <NoteForm
+            initialValues={initialFormValues}
+            onSubmitSuccess={handleModalClose}
+            onClose={handleModalClose}
+          />
+        </Modal>
+      )}
     </div>
   );
 };

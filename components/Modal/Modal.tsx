@@ -1,36 +1,34 @@
-import { createPortal } from 'react-dom';
-import { useEffect } from 'react';
-import NoteForm from '../NoteForm/NoteForm';
-import css from './NoteModal.module.css';
-import type { NoteTag } from '@/types/note';
+'use client';
 
-interface NoteModalProps {
+import React, { useEffect } from 'react';
+import { createPortal } from 'react-dom';
+import css from './Modal.module.css'; // Оновлений шлях до CSS
+
+interface ModalProps {
   onClose: () => void;
+  children: React.ReactNode; // Тепер приймає будь-який вміст
 }
 
-export default function NoteModal({ onClose }: NoteModalProps) {
+export default function Modal({ onClose, children }: ModalProps) {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
     };
     window.addEventListener('keydown', handleKeyDown);
 
+    // Відключаємо прокрутку body при відкритті модального вікна
     document.body.style.overflow = 'hidden';
 
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
+      // Відновлюємо прокрутку body при закритті модального вікна
       document.body.style.overflow = '';
     };
   }, [onClose]);
 
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    // Закриваємо модалку, тільки якщо клік був саме по фону, а не по її вмісту
     if (e.currentTarget === e.target) onClose();
-  };
-
-  const initialFormValues = {
-    title: '',
-    content: '',
-    tag: 'Todo' as NoteTag,
   };
 
   return createPortal(
@@ -48,12 +46,7 @@ export default function NoteModal({ onClose }: NoteModalProps) {
         >
           &times;
         </button>
-        <h2 className={css.title}>Create note</h2>
-        <NoteForm
-          initialValues={initialFormValues}
-          onSubmitSuccess={onClose}
-          onClose={onClose}
-        />
+        {children} {/* Універсальний вміст модального вікна */}
       </div>
     </div>,
     document.body

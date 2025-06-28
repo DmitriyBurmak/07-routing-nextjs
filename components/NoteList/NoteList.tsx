@@ -61,6 +61,7 @@ export default function NoteList({ notes }: NoteListProps) {
               <Link href={`/notes/${note.id}`} className={css.detailsLink}>
                 View details
               </Link>
+
               <button
                 className={css.button}
                 onClick={e => handleDeleteClick(e, note.id)}
