@@ -2,10 +2,9 @@
 
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { fetchNoteById } from '@/lib/api'; // Переконайтеся у правильному шляху
-import type { Note } from '@/types/note'; // Переконайтеся у правильному шляху
-import css from './NotePreview.module.css'; // Новий CSS для NotePreview
-
+import { fetchNoteById } from '@/lib/api';
+import type { Note } from '@/types/note';
+import css from './NotePreview.module.css';
 interface NotePreviewProps {
   id: number;
 }
@@ -20,7 +19,7 @@ const NotePreview: React.FC<NotePreviewProps> = ({ id }) => {
     queryKey: ['note', id],
     queryFn: () => fetchNoteById(id),
     enabled: !isNaN(id),
-    refetchOnMount: false, // Не перезавантажувати при монтуванні, якщо дані вже в кеші
+    refetchOnMount: false,
   });
 
   if (isNaN(id)) {
@@ -28,7 +27,7 @@ const NotePreview: React.FC<NotePreviewProps> = ({ id }) => {
   }
 
   if (isLoading) {
-    return <p className={css.loadingMessage}>Завантаження нотатки...</p>; // Простий індикатор завантаження
+    return <p className={css.loadingMessage}>Завантаження нотатки...</p>;
   }
 
   if (isError) {
@@ -43,7 +42,6 @@ const NotePreview: React.FC<NotePreviewProps> = ({ id }) => {
     return <p className={css.message}>Нотатка не знайдена.</p>;
   }
 
-  // Логіка форматування дати, як ми її покращували раніше
   const dateToFormat = note.updatedAt || note.createdAt;
   const formattedDate = new Date(dateToFormat).toLocaleDateString('uk-UA', {
     year: 'numeric',

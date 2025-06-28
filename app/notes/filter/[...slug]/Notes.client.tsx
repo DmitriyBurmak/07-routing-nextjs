@@ -6,12 +6,12 @@ import { useNotes } from '@/hooks/useNotes';
 import NoteList from '@/components/NoteList/NoteList';
 import Pagination from '@/components/Pagination/Pagination';
 import SearchBox from '@/components/SearchBox/SearchBox';
-import Modal from '@/components/Modal/Modal'; // <--- Оновлено імпорт на універсальний Modal
-import NoteForm from '@/components/NoteForm/NoteForm'; // <--- Імпортуємо NoteForm, якщо використовується для створення
+import Modal from '@/components/Modal/Modal';
+import NoteForm from '@/components/NoteForm/NoteForm';
 import css from './NotesPage.module.css';
 import Loader from '@/app/loading';
 import ErrorMessage from '@/components/ErrorMessage/ErrorMessage';
-import type { Note, NotesResponse, NoteTag } from '@/types/note'; // <--- Додано NoteTag, якщо використовується
+import type { Note, NotesResponse, NoteTag } from '@/types/note';
 
 interface NotesClientProps {
   initialNotes: Note[];
@@ -66,11 +66,10 @@ const NotesClient: React.FC<NotesClientProps> = ({
     setIsModalOpen(true);
   };
 
-  // Початкові значення для NoteForm
   const initialFormValues = {
     title: '',
     content: '',
-    tag: 'Todo' as NoteTag, // Замініть на дефолтний тег, якщо потрібно
+    tag: 'Todo' as NoteTag,
   };
 
   return (
@@ -107,11 +106,9 @@ const NotesClient: React.FC<NotesClientProps> = ({
         !isError &&
         currentNotes.length > 0 && <NoteList notes={currentNotes} />
       )}
-      {/* <--- Оновлено використання Modal з children для NoteForm --- */}
       {isModalOpen && (
         <Modal onClose={handleModalClose}>
           <h2 className={css.modalTitle}>Create note</h2>{' '}
-          {/* Додайте modalTitle в NotesPage.module.css якщо він не визначений */}
           <NoteForm
             initialValues={initialFormValues}
             onSubmitSuccess={handleModalClose}

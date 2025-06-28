@@ -33,7 +33,6 @@ export default async function NotesPage({ params }: NotesPageProps) {
     queryFn: () =>
       fetchNotes(initialPage, initialSearch, initialPerPage, apiTag),
   });
-  // ---
 
   const prefetchedNotesData = queryClient.getQueryData<NotesResponse>(queryKey);
   const initialNotes = prefetchedNotesData?.notes || [];

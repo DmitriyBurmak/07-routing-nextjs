@@ -2,11 +2,11 @@
 
 import React, { useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import css from './Modal.module.css'; // Оновлений шлях до CSS
+import css from './Modal.module.css';
 
 interface ModalProps {
   onClose: () => void;
-  children: React.ReactNode; // Тепер приймає будь-який вміст
+  children: React.ReactNode;
 }
 
 export default function Modal({ onClose, children }: ModalProps) {
@@ -15,19 +15,15 @@ export default function Modal({ onClose, children }: ModalProps) {
       if (e.key === 'Escape') onClose();
     };
     window.addEventListener('keydown', handleKeyDown);
-
-    // Відключаємо прокрутку body при відкритті модального вікна
     document.body.style.overflow = 'hidden';
 
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
-      // Відновлюємо прокрутку body при закритті модального вікна
       document.body.style.overflow = '';
     };
   }, [onClose]);
 
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    // Закриваємо модалку, тільки якщо клік був саме по фону, а не по її вмісту
     if (e.currentTarget === e.target) onClose();
   };
 
@@ -46,7 +42,7 @@ export default function Modal({ onClose, children }: ModalProps) {
         >
           &times;
         </button>
-        {children} {/* Універсальний вміст модального вікна */}
+        {children}
       </div>
     </div>,
     document.body

@@ -11,19 +11,15 @@ interface NotesFilterLayoutProps {
 export default function NotesFilterLayout({
   children,
   sidebar,
-  modal, // <--- Отримуємо пропс modal
+  modal,
 }: NotesFilterLayoutProps) {
   return (
     <>
       <div className={css.layoutContainer}>
-        <aside className={css.sidebarWrapper}>
-          {sidebar} {/* Рендеримо вміст паралельного маршруту @sidebar */}
-        </aside>
-        <main className={css.mainContent}>
-          {children} {/* Рендеримо основний контент сторінки */}
-        </main>
+        <aside className={css.sidebarWrapper}>{sidebar}</aside>
+        <main className={css.mainContent}>{children}</main>
       </div>
-      {modal} {/* <--- Рендеримо вміст перехопленого маршруту @modal */}
+      {modal}
     </>
   );
 }
