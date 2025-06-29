@@ -15,7 +15,7 @@ export default function RootLayout({
       <body>
         <TanStackProvider>
           <Header />
-          {children}
+          <main>{children}</main>
           {modal}
           <Footer />
           <Toaster position="top-right" />
