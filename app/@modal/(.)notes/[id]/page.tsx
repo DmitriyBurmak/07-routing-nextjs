@@ -6,12 +6,11 @@ import {
   dehydrate,
   HydrationBoundary,
 } from '@tanstack/react-query';
-import { fetchNoteById } from '@/lib/api';
-import type { Note } from '@/types/note';
 
 interface InterceptedNotePageProps {
   params: Promise<{ id: string }>;
 }
+
 export default async function InterceptedNotePage({
   params,
 }: InterceptedNotePageProps) {
@@ -23,26 +22,9 @@ export default async function InterceptedNotePage({
   }
 
   const queryClient = new QueryClient();
-  const queryKey = ['note', noteId];
-
-  try {
-    await queryClient.prefetchQuery({
-      queryKey: queryKey,
-      queryFn: () => fetchNoteById(noteId),
-    });
-  } catch (error) {
-    console.error('Error prefetching note data:', error);
-    notFound();
-  }
-
-  const noteData = queryClient.getQueryData<Note>(queryKey);
-
-  if (!noteData) {
-    notFound();
-  }
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <NotePreview note={noteData} />
+      <NotePreview id={noteId} />
     </HydrationBoundary>
   );
 }

@@ -3,21 +3,64 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import Modal from '@/components/Modal/Modal';
+import { useQuery } from '@tanstack/react-query';
+import { fetchNoteById } from '@/lib/api';
 import type { Note } from '@/types/note';
 import css from './NotePreview.module.css';
 
 interface NotePreviewProps {
-  note: Note;
+  id: number;
 }
 
-const NotePreview: React.FC<NotePreviewProps> = ({ note }) => {
+const NotePreview: React.FC<NotePreviewProps> = ({ id }) => {
   const router = useRouter();
   const handleClose = () => {
     router.back();
   };
 
+  const {
+    data: note,
+    isLoading,
+    isError,
+    error,
+  } = useQuery<Note, Error, Note, ['note', number]>({
+    queryKey: ['note', id],
+    queryFn: () => fetchNoteById(id),
+    enabled: !isNaN(id),
+  });
+
+  if (isNaN(id)) {
+    return (
+      <Modal onClose={handleClose}>
+        <p className={css.message}>Некоректний ID нотатки.</p>
+      </Modal>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <Modal onClose={handleClose}>
+        <p className={css.loadingMessage}>Завантаження нотатки...</p>
+      </Modal>
+    );
+  }
+
+  if (isError) {
+    return (
+      <Modal onClose={handleClose}>
+        <p className={css.message}>
+          Помилка при завантаженні: {error?.message || 'Невідома помилка'}
+        </p>
+      </Modal>
+    );
+  }
+
   if (!note) {
-    return <p className={css.message}>Нотатка не знайдена.</p>;
+    return (
+      <Modal onClose={handleClose}>
+        <p className={css.message}>Нотатка не знайдена.</p>
+      </Modal>
+    );
   }
 
   const dateToFormat = note.updatedAt || note.createdAt;
