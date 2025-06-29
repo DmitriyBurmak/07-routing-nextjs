@@ -1,6 +1,5 @@
 import React from 'react';
 import { notFound } from 'next/navigation';
-import ModalCloser from './ModalCloser.client';
 import NotePreview from './NotePreview.client';
 
 import {
@@ -45,9 +44,7 @@ export default async function InterceptedNotePage({
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <ModalCloser>
-        <NotePreview note={noteData} />
-      </ModalCloser>
+      <NotePreview note={noteData} />
     </HydrationBoundary>
   );
 }

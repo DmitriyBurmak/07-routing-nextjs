@@ -1,6 +1,8 @@
 'use client';
 
 import React from 'react';
+import { useRouter } from 'next/navigation';
+import Modal from '@/components/Modal/Modal';
 import type { Note } from '@/types/note';
 import css from './NotePreview.module.css';
 
@@ -9,6 +11,11 @@ interface NotePreviewProps {
 }
 
 const NotePreview: React.FC<NotePreviewProps> = ({ note }) => {
+  const router = useRouter();
+  const handleClose = () => {
+    router.back();
+  };
+
   if (!note) {
     return <p className={css.message}>Нотатка не знайдена.</p>;
   }
@@ -25,16 +32,18 @@ const NotePreview: React.FC<NotePreviewProps> = ({ note }) => {
   const datePrefix = note.updatedAt ? 'Оновлено' : 'Створено';
 
   return (
-    <div className={css.container}>
-      <h2 className={css.title}>{note.title}</h2>
-      <p className={css.content}>{note.content}</p>
-      <div className={css.footer}>
-        <span className={css.tag}>{note.tag}</span>
-        <span className={css.date}>
-          {datePrefix}: {formattedDate}
-        </span>
+    <Modal onClose={handleClose}>
+      <div className={css.container}>
+        <h2 className={css.title}>{note.title}</h2>
+        <p className={css.content}>{note.content}</p>
+        <div className={css.footer}>
+          <span className={css.tag}>{note.tag}</span>
+          <span className={css.date}>
+            {datePrefix}: {formattedDate}
+          </span>
+        </div>
       </div>
-    </div>
+    </Modal>
   );
 };
 
