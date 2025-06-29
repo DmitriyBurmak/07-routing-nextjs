@@ -1,27 +1,53 @@
-'use client';
-
 import React from 'react';
-import { useRouter } from 'next/navigation';
-import Modal from '@/components/Modal/Modal';
+import { notFound } from 'next/navigation';
+import ModalCloser from './ModalCloser.client';
 import NotePreview from './NotePreview.client';
 
+import {
+  QueryClient,
+  dehydrate,
+  HydrationBoundary,
+} from '@tanstack/react-query';
+import { fetchNoteById } from '@/lib/api';
+import type { Note } from '@/types/note';
+
 interface InterceptedNotePageProps {
-  params: Promise<{ id: string }>;
+  params: { id: string };
 }
 
-export default function InterceptedNotePage({
+export default async function InterceptedNotePage({
   params,
 }: InterceptedNotePageProps) {
-  const { id } = React.use(params);
-  const router = useRouter();
-  const noteId = Number(id);
-  const handleClose = () => {
-    router.back();
-  };
+  const noteId = Number(params.id);
+
+  if (isNaN(noteId)) {
+    notFound();
+  }
+
+  const queryClient = new QueryClient();
+  const queryKey = ['note', noteId];
+
+  try {
+    await queryClient.prefetchQuery({
+      queryKey: queryKey,
+      queryFn: () => fetchNoteById(noteId),
+    });
+  } catch (error) {
+    console.error('Error prefetching note data:', error);
+    notFound();
+  }
+
+  const noteData = queryClient.getQueryData<Note>(queryKey);
+
+  if (!noteData) {
+    notFound();
+  }
 
   return (
-    <Modal onClose={handleClose}>
-      <NotePreview id={noteId} />
-    </Modal>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <ModalCloser>
+        <NotePreview note={noteData} />
+      </ModalCloser>
+    </HydrationBoundary>
   );
 }

@@ -27,7 +27,7 @@ const SidebarNotes: React.FC = () => {
       : 'All';
 
   const getTagHref = (tag: UITag) => {
-    return `/notes/filter/${tag.toLowerCase()}`;
+    return `/notes/filter/${tag === 'All' ? 'all' : tag}`;
   };
 
   return (
