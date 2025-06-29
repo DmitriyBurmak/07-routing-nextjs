@@ -18,8 +18,8 @@ export default function RootLayout({
           {children}
           {modal}
           <Footer />
+          <Toaster position="top-right" />
         </TanStackProvider>
-        <Toaster position="top-right" />
       </body>
     </html>
   );

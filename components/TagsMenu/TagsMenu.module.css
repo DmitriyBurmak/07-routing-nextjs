@@ -21,11 +21,6 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.menuButton:focus {
-  outline: 2px solid #007bff;
-  outline-offset: 2px;
-}
-
 .menuList {
   position: absolute;
   top: calc(100% + 6px);
@@ -57,17 +52,4 @@
 .menuLink:hover {
   background-color: #f0f0f0;
   color: #333;
-}
-
-.menuLink:focus {
-  outline: 2px solid #007bff;
-  outline-offset: -2px;
-  background-color: #f0f0f0;
-  color: #333;
-}
-
-.menuLink.active {
-  background-color: #007bff;
-  color: white;
-  font-weight: bold;
 }
