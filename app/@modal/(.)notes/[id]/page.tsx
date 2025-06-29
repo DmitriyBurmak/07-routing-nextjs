@@ -1,7 +1,6 @@
 import React from 'react';
 import { notFound } from 'next/navigation';
 import NotePreview from './NotePreview.client';
-
 import {
   QueryClient,
   dehydrate,
@@ -11,13 +10,13 @@ import { fetchNoteById } from '@/lib/api';
 import type { Note } from '@/types/note';
 
 interface InterceptedNotePageProps {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
-
 export default async function InterceptedNotePage({
   params,
 }: InterceptedNotePageProps) {
-  const noteId = Number(params.id);
+  const { id } = await params;
+  const noteId = Number(id);
 
   if (isNaN(noteId)) {
     notFound();
@@ -41,7 +40,6 @@ export default async function InterceptedNotePage({
   if (!noteData) {
     notFound();
   }
-
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <NotePreview note={noteData} />
