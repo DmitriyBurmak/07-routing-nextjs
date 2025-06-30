@@ -1,13 +1,13 @@
 import React from 'react';
 import { notFound } from 'next/navigation';
-import NotePreview from './NotePreview.client';
 import {
   QueryClient,
   dehydrate,
   HydrationBoundary,
 } from '@tanstack/react-query';
 import { fetchNoteById } from '@/lib/api';
-import type { Note } from '@/types/note';
+
+import NotePreview from './NotePreview.client';
 
 interface InterceptedNotePageProps {
   params: Promise<{ id: string }>;
@@ -22,6 +22,7 @@ export default async function InterceptedNotePage({
   if (isNaN(noteId)) {
     notFound();
   }
+
   const queryClient = new QueryClient();
   const queryKey = ['note', noteId];
 
@@ -31,19 +32,14 @@ export default async function InterceptedNotePage({
       queryFn: () => fetchNoteById(noteId),
     });
   } catch (error) {
-    console.error('Error prefetching note data:', error);
-    notFound();
-  }
+    console.error('Помилка попереднього завантаження даних нотатки:', error);
 
-  const noteData = queryClient.getQueryData<Note>(queryKey);
-
-  if (!noteData) {
     notFound();
   }
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <NotePreview note={noteData} />
+      <NotePreview id={noteId} />
     </HydrationBoundary>
   );
 }
