@@ -32,7 +32,7 @@ export default async function InterceptedNotePage({
       queryFn: () => fetchNoteById(noteId),
     });
   } catch (error) {
-    console.error('Помилка попереднього завантаження даних нотатки:', error);
+    console.error('Error prefetching note data:', error);
 
     notFound();
   }
