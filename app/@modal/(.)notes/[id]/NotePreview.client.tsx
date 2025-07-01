@@ -27,6 +27,7 @@ const NotePreview: React.FC<NotePreviewProps> = ({ id }) => {
     queryKey: ['note', id],
     queryFn: () => fetchNoteById(id),
     enabled: !isNaN(id),
+    refetchOnMount: false,
   });
 
   if (isNaN(id)) {
@@ -64,15 +65,23 @@ const NotePreview: React.FC<NotePreviewProps> = ({ id }) => {
   }
 
   const dateToFormat = note.updatedAt || note.createdAt;
-  const formattedDate = new Date(dateToFormat).toLocaleDateString('uk-UA', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-  });
-  const datePrefix = note.updatedAt ? 'Оновлено' : 'Створено';
+  let formattedDate = 'Дата не вказана';
+  let datePrefix = '';
+
+  if (dateToFormat) {
+    const dateObj = new Date(dateToFormat);
+    if (!isNaN(dateObj.getTime())) {
+      formattedDate = dateObj.toLocaleDateString('uk-UA', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+      });
+      datePrefix = note.updatedAt ? 'Оновлено' : 'Створено';
+    }
+  }
 
   return (
     <Modal onClose={handleClose}>
@@ -82,7 +91,8 @@ const NotePreview: React.FC<NotePreviewProps> = ({ id }) => {
         <div className={css.footer}>
           <span className={css.tag}>{note.tag}</span>
           <span className={css.date}>
-            {datePrefix}: {formattedDate}
+            {datePrefix ? `${datePrefix}: ` : ''}
+            {formattedDate}
           </span>
         </div>
       </div>
