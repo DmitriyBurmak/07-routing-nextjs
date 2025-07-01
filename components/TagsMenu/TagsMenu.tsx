@@ -21,22 +21,16 @@ const TagsMenu: React.FC = () => {
   const buttonRef = useRef<HTMLButtonElement>(null);
   const menuListRef = useRef<HTMLUListElement>(null);
   const pathname = usePathname();
-  const currentPathSegment = pathname.split('/').pop();
+  const currentPathSegment = pathname.split('/').pop()?.toLowerCase() || 'all';
   const activeTag: UITag =
-    currentPathSegment &&
-    allTags.some(tag => tag.toLowerCase() === currentPathSegment.toLowerCase())
-      ? (allTags.find(
-          tag => tag.toLowerCase() === currentPathSegment.toLowerCase()
-        ) as UITag)
-      : 'All';
+    (allTags.find(tag => tag.toLowerCase() === currentPathSegment) as UITag) ||
+    'All';
   const toggleMenu = () => {
     setIsOpen(prev => !prev);
   };
-
   const getTagHref = (tag: UITag) => {
     return `/notes/filter/${tag === 'All' ? 'all' : tag}`;
   };
-
   const handleContainerBlur = useCallback(
     (event: React.FocusEvent<HTMLDivElement>) => {
       if (!event.currentTarget.contains(event.relatedTarget as Node)) {
@@ -45,7 +39,6 @@ const TagsMenu: React.FC = () => {
     },
     []
   );
-
   const handleMenuListKeyDown = useCallback(
     (event: React.KeyboardEvent<HTMLUListElement>) => {
       const menuItems = Array.from(
@@ -54,11 +47,11 @@ const TagsMenu: React.FC = () => {
       const currentFocusedIndex = menuItems.findIndex(
         item => item === document.activeElement
       );
+
       switch (event.key) {
         case 'Escape':
           event.preventDefault();
           setIsOpen(false);
-          buttonRef.current?.focus();
           break;
         case 'ArrowDown':
           event.preventDefault();
@@ -89,6 +82,7 @@ const TagsMenu: React.FC = () => {
     },
     []
   );
+
   useEffect(() => {
     if (isOpen) {
       setTimeout(() => {
@@ -97,12 +91,16 @@ const TagsMenu: React.FC = () => {
         ) as HTMLAnchorElement;
         firstMenuItem?.focus();
       }, 0);
+    } else {
+      buttonRef.current?.focus();
     }
   }, [isOpen]);
+
   const handleButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     toggleMenu();
   };
+
   return (
     <div
       className={css.menuContainer}
@@ -130,7 +128,6 @@ const TagsMenu: React.FC = () => {
         >
           {allTags.map(tag => (
             <li key={tag} className={css.menuItem} role="none">
-              {' '}
               <Link
                 href={getTagHref(tag)}
                 className={`${css.menuLink} ${activeTag === tag ? css.active : ''}`}
@@ -138,7 +135,7 @@ const TagsMenu: React.FC = () => {
                 role="menuitem"
                 tabIndex={0}
               >
-                {tag}{' '}
+                {tag}
               </Link>
             </li>
           ))}
