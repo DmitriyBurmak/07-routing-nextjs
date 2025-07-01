@@ -25,7 +25,7 @@ export default async function DefaultSidebar() {
             key={tag}
             className={tag === 'All' ? css.menuItemAll : css.menuItem}
           >
-            <SidebarLinkClient key={tag} href={getTagHref(tag)} tag={tag} />
+            <SidebarLinkClient href={getTagHref(tag)} tag={tag} />
           </li>
         ))}
       </ul>
